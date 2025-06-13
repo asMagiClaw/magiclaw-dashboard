@@ -149,9 +149,16 @@ def exec_cmd():
         if magiclaw_process and magiclaw_process.poll() is None:
             return jsonify({"status": "already running"})
 
+        # Get claw_id and mode from the request data
+        claw_id = str(data.get("id", 0))
+        mode = str(data.get("mode", "standalone"))
+        
+        magiclaw_cmd = [magiclaw_path, "--id", claw_id, "--mode", mode]
+        print("[run-magiclaw] cmd:", " ".join(magiclaw_cmd))
+
         env = os.environ.copy()
         magiclaw_process = subprocess.Popen(
-            [magiclaw_path],
+            magiclaw_cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -164,7 +171,10 @@ def exec_cmd():
         zmq_thread = threading.Thread(target=zmq_subscriber, daemon=True)
         zmq_thread.start()
         threading.Thread(target=read_process_output, args=(magiclaw_process,), daemon=True).start()
-        return jsonify({"status": "started"})
+        return jsonify({
+            "status": "started",
+            "cmd": "".join(magiclaw_cmd),
+        })
 
     elif cmd == "stop-magiclaw":
         if magiclaw_process and magiclaw_process.poll() is None:

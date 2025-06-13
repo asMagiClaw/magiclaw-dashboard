@@ -30,6 +30,19 @@
 
     <!-- Control Buttons -->
     <div class="flex justify-center gap-4">
+      <div class="flex justify-center gap-4 items-center">
+      <label class="text-sm font-medium text-gray-700">ID:</label>
+      <select id="clawId" class="border rounded px-2 py-1 text-sm">
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select>
+
+      <label class="text-sm font-medium text-gray-700 ml-4">Mode:</label>
+      <select id="clawMode" class="border rounded px-2 py-1 text-sm">
+        <option value="standalone">standalone</option>
+        <option value="teleop">teleop</option>
+      </select>
+    </div>
       <button id="runBtn" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Run</button>
       <button id="stopBtn" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Stop</button>
     </div>

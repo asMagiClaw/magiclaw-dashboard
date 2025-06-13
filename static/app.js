@@ -59,18 +59,34 @@ socket.on("status_update", (data) => {
 
 socket.on("log", appendLog);
 
+// 选择控件
+const clawIdSelect = document.getElementById("clawId");
+const clawModeSelect = document.getElementById("clawMode");
+
 // Control buttons for starting and stopping the MagicLaw process
 runBtn.addEventListener("click", async () => {
+  const clawId = parseInt(clawIdSelect.value);
+  const clawMode = clawModeSelect.value;
+
   const res = await fetch("/exec", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${AUTH_TOKEN}`
     },
-    body: JSON.stringify({ cmd: "run-magiclaw" }),
+    body: JSON.stringify({
+      cmd: "run-magiclaw",
+      id: clawId,
+      mode: clawMode
+    }),
   });
   const json = await res.json();
-  appendLog(`[client] Run: ${JSON.stringify(json)}`);
+  if (json.cmd) {
+    appendLog(`[client] Cmd: ${json.cmd}`);
+    appendLog(`[client] Run: ${JSON.stringify(json.status)}`);
+  } else {
+    appendLog(`[client] Run: ${JSON.stringify(json)}`);
+  }
 });
 
 stopBtn.addEventListener("click", async () => {
