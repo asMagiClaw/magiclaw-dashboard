@@ -3,7 +3,6 @@
 </p>
 <h1 align="center">MagiClaw Dashboard</h1>
 
-
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/Flask-3.1.1-black?logo=flask&logoColor=white" />
