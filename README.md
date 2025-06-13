@@ -1,7 +1,7 @@
 <p align="center">
   <img src="static/favicon-96x96.png" width="48" alt="MagiClaw Logo" /><br>
-  <strong style="font-size: 1.8rem;">MagiClaw Dashboard</strong>
 </p>
+<h1 align="center">MagiClaw Dashboard</h1>
 
 
 <p align="center">
