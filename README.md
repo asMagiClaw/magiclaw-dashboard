@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/favicon-96x96.png" width="48" alt="MagiClaw Logo" /><br>
+  <img src="static/favicon-96x96.png" width="80" alt="MagiClaw Logo" /><br>
 </p>
 <h1 align="center">MagiClaw Dashboard</h1>
 
