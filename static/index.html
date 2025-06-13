@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MagiClaw Dashboard</title>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <link href="/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <style>
+    .fixed-num {
+      display: inline-block;
+      width: 6ch;
+      text-align: right;
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body class="relative bg-gray-100 text-gray-900 font-sans">
+  <!-- GitHub Icon -->
+  <a href="https://github.com/asMagiClaw/magiclaw-dashboard"
+    target="_blank"
+    class="absolute top-4 right-4 hover:opacity-80"
+    aria-label="View on GitHub">
+    <img src="/github.svg" alt="GitHub" class="w-6 h-6">
+  </a>
+
+  <div class="max-w-6xl mx-auto p-6 space-y-6">
+    <h1 class="text-3xl font-bold text-center">MagiClaw Dashboard</h1>
+
+    <!-- Control Buttons -->
+    <div class="flex justify-center gap-4">
+      <button id="runBtn" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Run</button>
+      <button id="stopBtn" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Stop</button>
+    </div>
+
+    <!-- Claw + Motor Status -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      <div class="bg-white shadow rounded p-3 text-center">
+        <div class="text-lg font-semibold text-gray-500">Claw Angle</div>
+        <div id="claw-angle" class="text-xl font-bold text-purple-600">--</div>
+      </div>
+      <div class="bg-white shadow rounded p-3 text-center">
+        <div class="text-lg font-semibold text-gray-500">Motor Angle</div>
+        <div id="motor-angle" class="text-xl font-bold text-blue-600">--</div>
+      </div>
+      <div class="bg-white shadow rounded p-3 text-center">
+        <div class="text-lg font-semibold text-gray-500">Motor Speed</div>
+        <div id="motor-speed" class="text-xl font-bold text-green-600">--</div>
+      </div>
+      <div class="bg-white shadow rounded p-3 text-center">
+        <div class="text-lg font-semibold text-gray-500">Motor IQ</div>
+        <div id="motor-iq" class="text-xl font-bold text-yellow-600">--</div>
+      </div>
+      <div class="bg-white shadow rounded p-3 text-center">
+        <div class="text-lg font-semibold text-gray-500">Motor Temp</div>
+        <div id="motor-temp" class="text-xl font-bold text-red-600">--</div>
+      </div>
+    </div>
+
+    <!-- Finger Data -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white shadow rounded p-4 text-center">
+        <h2 class="text-lg font-semibold text-gray-500">Left Finger</h2>
+        <div>
+          <span class="inline-block w-16 text-right text-lg text-gray-500">Pose: </span>
+          <span id="finger0-pose">--</span>
+        </div>
+        <div>
+          <span class="inline-block w-16 text-right text-lg text-gray-500">Force: </span>
+          <span id="finger0-force">--</span>
+        </div>
+        <img id="finger0-img" class="mt-2 rounded shadow mx-auto h-48 object-contain" alt="Left finger image" />
+      </div>
+      <div class="bg-white shadow rounded p-4 text-center">
+        <h2 class="text-lg font-semibold text-gray-500">Right Finger</h2>
+        <div>
+          <span class="inline-block w-16 text-right text-lg text-gray-500">Pose:</span>
+          <span id="finger1-pose">--</span>
+        </div>
+        <div>
+          <span class="inline-block w-16 text-right text-lg text-gray-500">Force:</span>
+          <span id="finger1-force">--</span>
+        </div>
+        <img id="finger1-img" class="mt-2 rounded shadow mx-auto h-48 object-contain" alt="Right finger image" />
+      </div>
+    </div>
+
+
+    <!-- MagiClaw Pose -->
+    <div class="bg-white shadow rounded p-4 text-center">
+      <h2 class="text-lg font-semibold text-gray-500">MagiClaw Pose</h2>
+      <div>
+        <span id="magiclaw-pose">--</span>
+      </div>
+    </div>
+
+    <!-- Logs -->
+    <div id="logOutput" 
+      class="bg-black text-white p-4 rounded shadow-inner font-mono text-sm whitespace-pre-wrap break-words max-w-full overflow-y-auto"
+      style="height: 400px;"
+    >
+      <div class="text-gray-400">Waiting for logs...</div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+
+  <!-- Footer -->
+  <footer class="mt-8 text-center text-sm text-gray-500 py-8">
+    <hr class="my-4 border-gray-300">
+    <p>
+      © 2025 <a href="https://github.com/asMagiClaw/magiclaw-dashboard" class="text-blue-500 hover:underline">asMagiClaw</a> —
+      Design and Learning Research Group (DLRG)
+    </p>
+  </footer>
+
+</body>
+</html>
