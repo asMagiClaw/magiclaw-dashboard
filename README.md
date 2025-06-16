@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?logo=open-source-initiative&logoColor=white" />
 </p>
 
-This repository contains an real-time web interface for controlling and monitoring the **[MagiClaw](https://github.com/han-xudong/magiclaw)**.
+This repository contains an real-time web interface for controlling and monitoring the **[MagiClaw](https://github.com/asMagiClaw/magiclaw)**.
 
 ## 🚀 Installation
 
