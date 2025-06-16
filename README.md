@@ -4,10 +4,10 @@
 <h1 align="center">MagiClaw Dashboard</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Flask-3.1.1-black?logo=flask&logoColor=white" />
-  <img src="https://img.shields.io/badge/Raspberry_Pi-5_-A22846?logo=raspberry-pi&logoColor=white" />
-  <img src="https://img.shields.io/badge/License-MIT-3DA639?logo=open-source-initiative&logoColor=white" />
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white" /></a>
+  <a href="https://flask.palletsprojects.com/"><img src="https://img.shields.io/badge/Flask-3.1.1-black?logo=flask&logoColor=white" /></a>
+  <a href="https://www.raspberrypi.com/products/raspberry-pi-5/"><img src="https://img.shields.io/badge/Raspberry_Pi-5_-A22846?logo=raspberry-pi&logoColor=white" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639?logo=open-source-initiative&logoColor=white" /></a>
 </p>
 
 This repository contains an real-time web interface for controlling and monitoring the **[MagiClaw](https://github.com/asMagiClaw/magiclaw)**.
