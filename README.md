@@ -61,7 +61,7 @@ sudo systemctl start magiclaw-dashboard.service
 
 Once the service is running, you can access the dashboard by navigating to `http://<raspberry_pi_ip_or_host>:8000` in your web browser. Replace `<raspberry_pi_ip_or_host>` with the actual IP address or hostname of your Raspberry Pi.
 
-<p align="center"> <img src="docs/screenshot.jpg" width="80%"> </p>
+<p align="center"> <img src="docs/screenshot.jpg" width="100%"> </p>
 
 ## 📄 License
 
