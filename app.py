@@ -41,31 +41,34 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 AUTH_TOKEN = "magiclaw"
 
 # Global variables for process management
-magiclaw_process = None
-zmq_thread = None
-stop_zmq_flag = threading.Event()
+magiclaw_process = {}
+zmq_thread = {}
+stop_zmq_flag = {}
 
 # Function to read and process output from the subprocess
-def read_process_output(proc):
+def read_process_output(proc, claw_id):
     """
-    Reads the output from the subprocess and emits it via SocketIO.
-    
+    Reads the output from the subprocess and emits it via SocketIO, 
+    namespaced or tagged by claw_id.
+
     Args:
         proc (subprocess.Popen): The subprocess to read output from.
+        claw_id (int): The ID of the claw associated with this subprocess.
     """
-    
     try:
         for line in iter(proc.stdout.readline, ''):
             if line:
                 line = line.rstrip()
-                print("[run-magiclaw]", line)
-                socketio.emit('log', line)
+                log_line = f"[id {claw_id}] {line}"
+                print("[run-magiclaw]", log_line)
+                socketio.emit('log', {"id": claw_id, "line": line})
         proc.stdout.close()
     except Exception as e:
-        print("[read error]", e)
+        print(f"[read error][id {claw_id}]", e)
+
 
 # ZMQ subscriber function to listen for messages from the MagiClaw
-def zmq_subscriber():
+def zmq_subscriber(claw_id=0):
     """
     Subscribes to the ZMQ socket and emits messages via SocketIO.
     
@@ -77,17 +80,23 @@ def zmq_subscriber():
     sub = context.socket(zmq.SUB)
     sub.setsockopt(zmq.CONFLATE, 1)
     sub.setsockopt_string(zmq.SUBSCRIBE, "")
-    sub.connect("tcp://localhost:6300")
+    if claw_id == 0:
+        sub.connect("tcp://localhost:6300")
+    else:
+        sub.connect("tcp://localhost:6400")
 
-    msg = magiclaw_msg_pb2.MagiClaw()
-
-    while not stop_zmq_flag.is_set():
+    while not stop_zmq_flag[claw_id].is_set():
         try:
+            # Receive a message
             data = sub.recv(flags=zmq.NOBLOCK)
+            
+            # Parse the message
+            msg = magiclaw_msg_pb2.MagiClaw()
             msg.ParseFromString(data)
 
-            # parse data
+            # Create data to emit
             data_to_emit = {
+                "id": claw_id,
                 "motor_angle": msg.claw.motor.angle,
                 "motor_speed": msg.claw.motor.speed,
                 "motor_iq": msg.claw.motor.iq,
@@ -142,22 +151,21 @@ def exec_cmd():
 
     data = request.get_json()
     cmd = data.get("cmd", "")
+    claw_id = int(data.get("id", 0))
+    mode = data.get("mode", "standalone")
 
     magiclaw_path = "/home/pi/miniconda3/bin/run-magiclaw"
 
     if cmd == "run-magiclaw":
-        if magiclaw_process and magiclaw_process.poll() is None:
-            return jsonify({"status": "already running"})
-
-        # Get claw_id and mode from the request data
-        claw_id = str(data.get("id", 0))
-        mode = str(data.get("mode", "standalone"))
+        if claw_id in magiclaw_process and magiclaw_process[claw_id].poll() is None:
+            return jsonify({"id": claw_id, "status": "already running"})
         
-        magiclaw_cmd = [magiclaw_path, "--id", claw_id, "--mode", mode]
+        
+        magiclaw_cmd = [magiclaw_path, "--id", str(claw_id), "--mode", mode]
         print("[run-magiclaw] cmd:", " ".join(magiclaw_cmd))
 
         env = os.environ.copy()
-        magiclaw_process = subprocess.Popen(
+        proc = subprocess.Popen(
             magiclaw_cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -167,23 +175,25 @@ def exec_cmd():
             env=env,
             preexec_fn=os.setsid
         )
-        stop_zmq_flag.clear()
-        zmq_thread = threading.Thread(target=zmq_subscriber, daemon=True)
-        zmq_thread.start()
-        threading.Thread(target=read_process_output, args=(magiclaw_process,), daemon=True).start()
+        magiclaw_process[claw_id] = proc
+        stop_zmq_flag[claw_id] = threading.Event()
+        stop_zmq_flag[claw_id].clear()
+        threading.Thread(target=zmq_subscriber, args=(claw_id,), daemon=True).start()
+        threading.Thread(target=read_process_output, args=(proc, claw_id), daemon=True).start()
         return jsonify({
+            "id": claw_id, 
             "status": "started",
-            "cmd": "".join(magiclaw_cmd),
+            "cmd": " ".join(magiclaw_cmd),
         })
 
     elif cmd == "stop-magiclaw":
-        if magiclaw_process and magiclaw_process.poll() is None:
-            os.killpg(os.getpgid(magiclaw_process.pid), signal.SIGINT)
-            magiclaw_process = None
-            stop_zmq_flag.set()
-            return jsonify({"status": "stopped"})
+        if claw_id in magiclaw_process and magiclaw_process[claw_id].poll() is None:
+            os.killpg(os.getpgid(magiclaw_process[claw_id].pid), signal.SIGINT)
+            magiclaw_process.pop(claw_id)
+            stop_zmq_flag[claw_id].set()
+            return jsonify({"id": claw_id, "status": "stopped"})
         else:
-            return jsonify({"status": "not running"})
+            return jsonify({"id": claw_id, "status": "not running"})
 
     return jsonify({"error": "Unknown cmd"}), 400
 

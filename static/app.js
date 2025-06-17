@@ -31,6 +31,12 @@ function formatFixedArray(arr) {
 
 // Update the status display with data from the server
 socket.on("status_update", (data) => {
+  const currentClawId = parseInt(clawIdSelect.value);
+
+  if (typeof data.id !== "undefined" && data.id !== currentClawId) {
+    return; // Ignore messages for other claw IDs
+  }
+
   document.getElementById("motor-angle").textContent = data.motor_angle.toFixed(2);
   document.getElementById("motor-speed").textContent = data.motor_speed.toFixed(2);
   document.getElementById("motor-iq").textContent = data.motor_iq.toFixed(2);
@@ -57,11 +63,50 @@ socket.on("status_update", (data) => {
   document.getElementById("magiclaw-pose").innerHTML = formatFixedArray(data.magiclaw_pose);
 });
 
-socket.on("log", appendLog);
+// Handle log messages from the server
+socket.on("log", (msg) => {
+  const currentClawId = parseInt(clawIdSelect.value);
 
-// 选择控件
+  // Support both object and string message formats
+  if (typeof msg === "object" && msg.id !== undefined && msg.line !== undefined) {
+    if (msg.id !== currentClawId) return;  // Ignore messages for other claw IDs
+    appendLog(msg.line);
+  } else if (typeof msg === "string") {
+    const match = msg.match(/^\[id (\d+)\] (.*)$/);
+    if (match) {
+      const logId = parseInt(match[1]);
+      const logLine = match[2];
+      if (logId === currentClawId) appendLog(logLine);
+    } else {
+      // If no ID is specified, append the message directly
+      appendLog(msg);
+    }
+  }
+});
+
+// Set up claw ID and mode selection
 const clawIdSelect = document.getElementById("clawId");
 const clawModeSelect = document.getElementById("clawMode");
+
+clawIdSelect.addEventListener("change", () => {
+  document.getElementById("motor-angle").textContent = "--";
+  document.getElementById("motor-speed").textContent = "--";
+  document.getElementById("motor-iq").textContent = "--";
+  document.getElementById("motor-temp").textContent = "--";
+  document.getElementById("claw-angle").textContent = "--";
+  document.getElementById("finger0-pose").innerHTML = "--";
+  document.getElementById("finger0-force").innerHTML = "--";
+  document.getElementById("finger1-pose").innerHTML = "--";
+  document.getElementById("finger1-force").innerHTML = "--";
+  const finger0Img = document.getElementById("finger0-img");
+  const finger1Img = document.getElementById("finger1-img");
+  if (finger0Img) finger0Img.src = "";
+  if (finger1Img) finger1Img.src = "";
+  document.getElementById("magiclaw-pose").innerHTML = "--";
+  logOutput.innerHTML = "";
+  appendLog(`[client] Switched to claw ID ${clawIdSelect.value}`);
+});
+
 
 // Control buttons for starting and stopping the MagicLaw process
 runBtn.addEventListener("click", async () => {
