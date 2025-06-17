@@ -63,6 +63,24 @@ Once the service is running, you can access the dashboard by navigating to `http
 
 <p align="center"> <img src="docs/screenshot.jpg" width="100%"> </p>
 
+In addtion, it's available to send `run-magiclaw` commands using `curl`:
+
+```bash
+curl -X POST http://<raspberry_pi_ip_or_hostname>:8000/exec \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer magiclaw" \
+-d '{"cmd": "run-magiclaw", "id": <id>, "mode": <mode>}'
+```
+
+And also `stop-magiclaw` commands:
+
+```bash
+curl -X POST http://<raspberry_pi_ip_or_hostname>:8000/exec \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer magiclaw" \
+-d '{"cmd": "stop-magiclaw", "id": <id>}'
+```
+
 ## 📄 License
 
 This repository is licensed under the [MIT License](LICENSE).
