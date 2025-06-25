@@ -69,8 +69,10 @@ In addtion, it's available to send `run-magiclaw` commands using `curl`:
 curl -X POST http://<raspberry_pi_ip_or_hostname>:8000/exec \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer magiclaw" \
--d '{"cmd": "run-magiclaw", "id": <id>, "mode": <mode>}'
+-d '{"cmd": "run-magiclaw", "id": <id>, "mode": <mode>, "phone_host": <phone_host>, "bilateral_host": <bilateral_host>}'
 ```
+
+where `<id>` is the MagiClaw's ID (corresponding to the `can` interface), `<mode>` is the operation mode (including `standalone` (default) and `teleop`), `<phone_host>` is the host address of the phone, and `<bilateral_host>` is the host address of the bilateral communication (only required for `teleop` mode).
 
 And also `stop-magiclaw` commands:
 

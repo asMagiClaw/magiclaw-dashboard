@@ -153,15 +153,20 @@ def exec_cmd():
     cmd = data.get("cmd", "")
     claw_id = int(data.get("id", 0))
     mode = data.get("mode", "standalone")
+    phone_host = data.get("phone_host", "")
+    bilateral_host = data.get("bilateral_host", "")
 
     magiclaw_path = "/home/pi/miniconda3/bin/run-magiclaw"
 
     if cmd == "run-magiclaw":
         if claw_id in magiclaw_process and magiclaw_process[claw_id].poll() is None:
             return jsonify({"id": claw_id, "status": "already running"})
-        
-        
+
         magiclaw_cmd = [magiclaw_path, "--id", str(claw_id), "--mode", mode]
+        if phone_host != "":
+            magiclaw_cmd += ["--phone_host", phone_host]
+        if bilateral_host != "":
+            magiclaw_cmd += ["--bilateral_host", bilateral_host]
         print("[run-magiclaw] cmd:", " ".join(magiclaw_cmd))
 
         env = os.environ.copy()
