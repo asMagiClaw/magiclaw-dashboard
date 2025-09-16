@@ -156,7 +156,7 @@ def exec_cmd():
     phone_host = data.get("phone_host", "")
     bilateral_host = data.get("bilateral_host", "")
 
-    magiclaw_path = "/home/pi/miniconda3/bin/run-magiclaw"
+    magiclaw_path = "/home/pi/miniconda3/envs/magiclaw/bin/run-magiclaw"
 
     if cmd == "run-magiclaw":
         if claw_id in magiclaw_process and magiclaw_process[claw_id].poll() is None:
